@@ -1,6 +1,6 @@
 "use server"
 
-import { createAdminClient } from "./supabase/admin"
+import { createAdminClient } from "@/lib/supabase/admin"
 
 export async function isFirstUser() {
   const admin = createAdminClient()
@@ -27,11 +27,12 @@ export async function completeOnboarding(data: {
   const admin = createAdminClient()
 
   // 1. Create Auth User with Service Role
-  const { data: authData, error: authError } = await admin.auth.admin.createUser({
-    email: data.email,
-    password: data.password,
-    email_confirm: true,
-  })
+  const { data: authData, error: authError } =
+    await admin.auth.admin.createUser({
+      email: data.email,
+      password: data.password,
+      email_confirm: true,
+    })
 
   if (authError) {
     throw new Error(authError.message)
@@ -44,16 +45,14 @@ export async function completeOnboarding(data: {
   const userId = authData.user.id
 
   // 2. Create User Profile
-  const { error: profileError } = await admin
-    .from("user_profiles")
-    .insert({
-      id: userId,
-      email: data.email,
-      first_name: data.firstName,
-      last_name: data.lastName,
-      display_name: `${data.firstName} ${data.lastName}`,
-      is_system_admin: true,
-    })
+  const { error: profileError } = await admin.from("user_profiles").insert({
+    id: userId,
+    email: data.email,
+    first_name: data.firstName,
+    last_name: data.lastName,
+    display_name: `${data.firstName} ${data.lastName}`,
+    is_system_admin: true,
+  })
 
   if (profileError) {
     throw new Error(profileError.message)

@@ -1,4 +1,4 @@
-import { isFirstUser } from "@/lib/onboarding"
+import { isFirstUser } from "@/features/onboarding/actions"
 import { OnboardingForm } from "@/features/onboarding/components/onboarding-form"
 import { redirect } from "next/navigation"
 

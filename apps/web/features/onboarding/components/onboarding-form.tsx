@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Field, FieldLabel, FieldDescription, FieldError } from "@workspace/ui/components/field"
 import { useMutation } from "@tanstack/react-query"
 import { createClient } from "@/lib/supabase/client"
-import { completeOnboarding } from "@/lib/onboarding"
+import { completeOnboarding } from "../actions"
 import { useRouter } from "next/navigation"
 
 const onboardingSchema = z.object({
