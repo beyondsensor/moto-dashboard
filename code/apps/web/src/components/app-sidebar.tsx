@@ -10,6 +10,7 @@ import {
   HelpCircle,
   LogOut,
   Command,
+  LucideIcon,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -23,75 +24,34 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-  SidebarGroup,
-  SidebarGroupLabel,
 } from "@workspace/ui/components/sidebar"
 import { Separator } from "@workspace/ui/components/separator"
 
-// This is sample data.
-const data = {
-  user: {
-    name: "John Doe",
-    email: "john@example.com",
-    avatar: "/avatars/john-doe.jpg",
-  },
-  groups: [
-    {
-      label: "Menu",
-      items: [
-        {
-          title: "Dashboard",
-          url: "/authenticated/home",
-          icon: LayoutDashboard,
-          isActive: true,
-        },
-        {
-          title: "Tasks",
-          url: "#",
-          icon: ClipboardList,
-          badge: "12+",
-        },
-        {
-          title: "Calendar",
-          url: "#",
-          icon: Calendar,
-        },
-        {
-          title: "Analytics",
-          url: "#",
-          icon: BarChart3,
-        },
-        {
-          title: "Team",
-          url: "#",
-          icon: Users,
-        },
-      ],
-    },
-    {
-      label: "General",
-      items: [
-        {
-          title: "Settings",
-          url: "#",
-          icon: Settings,
-        },
-        {
-          title: "Help",
-          url: "#",
-          icon: HelpCircle,
-        },
-        {
-          title: "Logout",
-          url: "#",
-          icon: LogOut,
-        },
-      ],
-    },
-  ],
+export interface SidebarItemsProps {
+  title: string
+  url: string
+  icon: LucideIcon
+  isActive?: boolean
+  badge?: string
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export interface SidebarGroupProps {
+  label: string
+  items: SidebarItemsProps[]
+}
+
+export interface UserInfoProps {
+  name: string
+  email: string
+  avatar: string
+}
+
+export interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  user: UserInfoProps
+  groups: SidebarGroupProps[]
+}
+
+export function AppSidebar({ user, groups, ...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -116,13 +76,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        {data.groups.map((group) => (
+        {groups.map((group) => (
           <NavMain key={group.label} items={group.items} label={group.label} />
         ))}
       </SidebarContent>
       <SidebarFooter>
         <Separator />
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
