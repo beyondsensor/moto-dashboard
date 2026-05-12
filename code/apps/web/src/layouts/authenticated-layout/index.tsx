@@ -1,14 +1,11 @@
-"use client"
-
 import { ReactNode } from "react"
+import { cookies } from "next/headers"
 import { AppSidebar, AppSidebarProps } from "@/components/app-sidebar"
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
 } from "@workspace/ui/components/breadcrumb"
 import { Separator } from "@workspace/ui/components/separator"
 import {
@@ -17,14 +14,6 @@ import {
   SidebarTrigger,
 } from "@workspace/ui/components/sidebar"
 import { TooltipProvider } from "@workspace/ui/components/tooltip"
-import {
-  LayoutDashboard,
-  ClipboardList,
-  Calendar,
-  BarChart3,
-  Users,
-  Settings,
-} from "lucide-react"
 
 const sidebarData: AppSidebarProps = {
   user: {
@@ -39,29 +28,29 @@ const sidebarData: AppSidebarProps = {
         {
           title: "Dashboard",
           url: "/authenticated/home",
-          icon: LayoutDashboard,
+          icon: "LayoutDashboard",
           isActive: true,
         },
         {
           title: "Tasks",
           url: "#",
-          icon: ClipboardList,
+          icon: "ClipboardList",
           badge: "12+",
         },
         {
           title: "Calendar",
           url: "#",
-          icon: Calendar,
+          icon: "Calendar",
         },
         {
           title: "Analytics",
           url: "#",
-          icon: BarChart3,
+          icon: "BarChart3",
         },
         {
           title: "Team",
           url: "#",
-          icon: Users,
+          icon: "Users",
         },
       ],
     },
@@ -71,17 +60,24 @@ const sidebarData: AppSidebarProps = {
         {
           title: "Settings",
           url: "#",
-          icon: Settings,
+          icon: "Settings",
         },
       ],
     },
   ],
 }
 
-export function AuthenticatedLayout({ children }: { children: ReactNode }) {
+export async function AuthenticatedLayout({
+  children,
+}: {
+  children: ReactNode
+}) {
+  const cookieStore = await cookies()
+  const defaultOpen = cookieStore.get("sidebar_state")?.value !== "false"
+
   return (
     <TooltipProvider delayDuration={0}>
-      <SidebarProvider>
+      <SidebarProvider defaultOpen={defaultOpen}>
         <AppSidebar user={sidebarData.user} groups={sidebarData.groups} />
         <PageContent
           breadcrumbs={[{ label: "Dashboard", href: "/authenticated/home" }]}

@@ -27,10 +27,23 @@ import {
 } from "@workspace/ui/components/sidebar"
 import { Separator } from "@workspace/ui/components/separator"
 
+const iconMap = {
+  LayoutDashboard,
+  ClipboardList,
+  Calendar,
+  BarChart3,
+  Users,
+  Settings,
+  HelpCircle,
+  LogOut,
+}
+
+export type SidebarIconName = keyof typeof iconMap
+
 export interface SidebarItemsProps {
   title: string
   url: string
-  icon: LucideIcon
+  icon: SidebarIconName
   isActive?: boolean
   badge?: string
 }
@@ -77,7 +90,14 @@ export function AppSidebar({ user, groups, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         {groups.map((group) => (
-          <NavMain key={group.label} items={group.items} label={group.label} />
+          <NavMain
+            key={group.label}
+            label={group.label}
+            items={group.items.map((item) => ({
+              ...item,
+              icon: iconMap[item.icon] || HelpCircle,
+            }))}
+          />
         ))}
       </SidebarContent>
       <SidebarFooter>
