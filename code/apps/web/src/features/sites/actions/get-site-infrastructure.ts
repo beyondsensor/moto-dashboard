@@ -22,12 +22,19 @@ export async function getSiteInfrastructureAction(siteId: string) {
     throw new Error(error.message)
   }
 
-  // Sort floors and zones by order_index
+  // Sort floors and zones by order_index and map to camelCase
   const sortedData = (data || []).map(building => ({
     ...building,
+    orderIndex: building.order_index,
     floors: (building.floors || []).sort((a: any, b: any) => (a.order_index || 0) - (b.order_index || 0)).map((floor: any) => ({
       ...floor,
-      zones: (floor.zones || []).sort((a: any, b: any) => (a.order_index || 0) - (b.order_index || 0))
+      orderIndex: floor.order_index,
+      levelNumber: floor.level_number,
+      floorPlanUrl: floor.floor_plan_url,
+      zones: (floor.zones || []).sort((a: any, b: any) => (a.order_index || 0) - (b.order_index || 0)).map((zone: any) => ({
+        ...zone,
+        orderIndex: zone.order_index
+      }))
     }))
   }))
 

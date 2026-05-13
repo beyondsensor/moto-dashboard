@@ -24,71 +24,59 @@ export function BuildingDetails({ building, onSave, isPending }: BuildingDetails
       address: building.address || "",
       latitude: building.latitude || 0,
       longitude: building.longitude || 0,
-      order_index: building.orderIndex || 0,
+      orderIndex: building.orderIndex || 0,
     }
   })
 
   return (
-    <Card className="border-none shadow-none bg-transparent">
-      <CardHeader className="px-0 pt-0">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-primary/10 text-primary">
-              <Building2 className="size-5" />
-            </div>
-            <div>
-              <CardTitle>Building Details</CardTitle>
-              <CardDescription>Configure physical building properties.</CardDescription>
-            </div>
-          </div>
-          <Button onClick={handleSubmit(onSave)} disabled={isPending || !isDirty} className="w-full sm:w-auto">
-            {isPending ? "Saving..." : (
-              <>
-                <Save data-icon="inline-start" />
-                Save Building
-              </>
-            )}
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent className="px-0 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Field data-invalid={!!errors.name}>
-            <FieldLabel htmlFor="name">Building Name</FieldLabel>
-            <Input id="name" {...register("name", { required: "Name is required" })} placeholder="Main Tower" />
-            <FieldError errors={errors.name ? [errors.name] : []} />
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="order_index">Order Index</FieldLabel>
-            <Input id="order_index" type="number" {...register("order_index", { valueAsNumber: true })} />
-          </Field>
-        </div>
-
-        <Field>
-          <FieldLabel htmlFor="description">Description</FieldLabel>
-          <Textarea id="description" {...register("description")} placeholder="Optional description..." className="min-h-[100px] resize-none" />
+    <div className="space-y-6 py-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Field data-invalid={!!errors.name}>
+          <FieldLabel htmlFor="name">Building Name</FieldLabel>
+          <Input id="name" {...register("name", { required: "Name is required" })} placeholder="Main Tower" />
+          <FieldError errors={errors.name ? [errors.name] : []} />
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="address">Address</FieldLabel>
-          <div className="relative">
-            <MapPin className="absolute left-3 top-3 size-4 text-muted-foreground" />
-            <Textarea id="address" className="pl-9 min-h-[80px] resize-none" {...register("address")} placeholder="Full address of the building..." />
-          </div>
+          <FieldLabel htmlFor="orderIndex">Order Index</FieldLabel>
+          <Input id="orderIndex" type="number" {...register("orderIndex", { valueAsNumber: true })} />
         </Field>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-           <Field>
-             <FieldLabel htmlFor="latitude">Latitude</FieldLabel>
-             <Input id="latitude" type="number" step="any" {...register("latitude", { valueAsNumber: true })} />
-           </Field>
-           <Field>
-             <FieldLabel htmlFor="longitude">Longitude</FieldLabel>
-             <Input id="longitude" type="number" step="any" {...register("longitude", { valueAsNumber: true })} />
-           </Field>
+      <Field>
+        <FieldLabel htmlFor="description">Description</FieldLabel>
+        <Textarea id="description" {...register("description")} placeholder="Optional description..." className="min-h-[100px] resize-none" />
+      </Field>
+
+      <Field>
+        <FieldLabel htmlFor="address">Address</FieldLabel>
+        <div className="relative">
+          <MapPin className="absolute left-3 top-3 size-4 text-muted-foreground" />
+          <Textarea id="address" className="pl-9 min-h-[80px] resize-none" {...register("address")} placeholder="Full address of the building..." />
         </div>
-      </CardContent>
-    </Card>
+      </Field>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+         <Field>
+           <FieldLabel htmlFor="latitude">Latitude</FieldLabel>
+           <Input id="latitude" type="number" step="any" {...register("latitude", { valueAsNumber: true })} />
+         </Field>
+         <Field>
+           <FieldLabel htmlFor="longitude">Longitude</FieldLabel>
+           <Input id="longitude" type="number" step="any" {...register("longitude", { valueAsNumber: true })} />
+         </Field>
+      </div>
+
+      <div className="flex justify-end pt-4 border-t">
+        <Button onClick={handleSubmit(onSave)} disabled={isPending || !isDirty} className="w-full sm:w-auto">
+          {isPending ? "Saving..." : (
+            <>
+              <Save data-icon="inline-start" />
+              Save Building
+            </>
+          )}
+        </Button>
+      </div>
+    </div>
   )
 }

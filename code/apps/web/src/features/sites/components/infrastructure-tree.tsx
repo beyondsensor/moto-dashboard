@@ -1,9 +1,9 @@
 "use client"
 
+import React from "react"
 import { Building, Floor, Zone } from "../types"
 import { cn } from "@workspace/ui/lib/utils"
 import { Building2, Layers, MapPin, ChevronRight, Plus, Trash2 } from "lucide-react"
-import { useState } from "react"
 import { Button } from "@workspace/ui/components/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@workspace/ui/components/collapsible"
 
@@ -55,7 +55,7 @@ export function InfrastructureTree({
 }
 
 function BuildingNode({ building, selectedId, selectedType, onSelect, onAdd, onDelete }: any) {
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = React.useState(true)
   const isSelected = selectedId === building.id && selectedType === "building"
 
   return (
@@ -100,7 +100,7 @@ function BuildingNode({ building, selectedId, selectedType, onSelect, onAdd, onD
 }
 
 function FloorNode({ floor, selectedId, selectedType, onSelect, onAdd, onDelete }: any) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = React.useState(false)
   const isSelected = selectedId === floor.id && selectedType === "floor"
 
   return (

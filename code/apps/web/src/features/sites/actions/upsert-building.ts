@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 
-export async function upsertBuildingAction(siteId: string, data: { id?: string, name: string, description?: string, address?: string, latitude?: number, longitude?: number, order_index?: number }) {
+export async function upsertBuildingAction(siteId: string, data: { id?: string, name: string, description?: string, address?: string, latitude?: number, longitude?: number, orderIndex?: number }) {
   const supabase = await createClient()
 
   const { id, ...payload } = data
@@ -18,7 +18,7 @@ export async function upsertBuildingAction(siteId: string, data: { id?: string, 
         address: payload.address,
         latitude: payload.latitude,
         longitude: payload.longitude,
-        order_index: payload.order_index,
+        order_index: payload.orderIndex,
         updated_at: new Date().toISOString() 
       })
       .eq("id", id)
@@ -34,7 +34,7 @@ export async function upsertBuildingAction(siteId: string, data: { id?: string, 
         address: payload.address,
         latitude: payload.latitude,
         longitude: payload.longitude,
-        order_index: payload.order_index || 0
+        order_index: payload.orderIndex || 0
       })
       .select()
       .single()

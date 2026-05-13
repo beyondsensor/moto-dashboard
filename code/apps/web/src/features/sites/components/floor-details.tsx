@@ -27,64 +27,52 @@ export function FloorDetails({ floor, onSave, isPending }: FloorDetailsProps) {
   })
 
   return (
-    <Card className="border-none shadow-none bg-transparent">
-      <CardHeader className="px-0 pt-0">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-primary/10 text-primary">
-              <Layers className="size-5" />
-            </div>
-            <div>
-              <CardTitle>Floor Details</CardTitle>
-              <CardDescription>Configure floor levels and layout plans.</CardDescription>
-            </div>
-          </div>
-          <Button onClick={handleSubmit(onSave)} disabled={isPending || !isDirty} className="w-full sm:w-auto">
-            {isPending ? "Saving..." : (
-              <>
-                <Save data-icon="inline-start" />
-                Save Floor
-              </>
-            )}
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent className="px-0 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Field data-invalid={!!errors.name}>
-            <FieldLabel htmlFor="name">Floor Name</FieldLabel>
-            <Input id="name" {...register("name", { required: "Name is required" })} placeholder="Level 1" />
-            <FieldError errors={errors.name ? [errors.name] : []} />
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="levelNumber">Level Number</FieldLabel>
-            <Input id="levelNumber" type="number" {...register("levelNumber", { valueAsNumber: true })} />
-          </Field>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-           <Field>
-             <FieldLabel htmlFor="orderIndex">Order Index</FieldLabel>
-             <Input id="orderIndex" type="number" {...register("orderIndex", { valueAsNumber: true })} />
-           </Field>
-        </div>
+    <div className="space-y-6 py-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Field data-invalid={!!errors.name}>
+          <FieldLabel htmlFor="name">Floor Name</FieldLabel>
+          <Input id="name" {...register("name", { required: "Name is required" })} placeholder="Level 1" />
+          <FieldError errors={errors.name ? [errors.name] : []} />
+        </Field>
 
         <Field>
-          <FieldLabel>Floor Plan</FieldLabel>
-          <div className="border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center bg-muted/5">
-             <Upload className="size-8 text-muted-foreground mb-2" />
-             <p className="text-sm font-medium">Click to upload or drag and drop</p>
-             <p className="text-xs text-muted-foreground mt-1">SVG, PNG, or JPG (max 5MB)</p>
-             <Button variant="outline" size="sm" className="mt-4" type="button">
-                Select File
-             </Button>
-          </div>
-          {floor.floorPlanUrl && (
-            <p className="text-xs text-muted-foreground mt-2 truncate">Current: {floor.floorPlanUrl}</p>
-          )}
+          <FieldLabel htmlFor="levelNumber">Level Number</FieldLabel>
+          <Input id="levelNumber" type="number" {...register("levelNumber", { valueAsNumber: true })} />
         </Field>
-      </CardContent>
-    </Card>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+         <Field>
+           <FieldLabel htmlFor="orderIndex">Order Index</FieldLabel>
+           <Input id="orderIndex" type="number" {...register("orderIndex", { valueAsNumber: true })} />
+         </Field>
+      </div>
+
+      <Field>
+        <FieldLabel>Floor Plan</FieldLabel>
+        <div className="border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center bg-muted/5">
+           <Upload className="size-8 text-muted-foreground mb-2" />
+           <p className="text-sm font-medium">Click to upload or drag and drop</p>
+           <p className="text-xs text-muted-foreground mt-1">SVG, PNG, or JPG (max 5MB)</p>
+           <Button variant="outline" size="sm" className="mt-4" type="button">
+              Select File
+           </Button>
+        </div>
+        {floor.floorPlanUrl && (
+          <p className="text-xs text-muted-foreground mt-2 truncate">Current: {floor.floorPlanUrl}</p>
+        )}
+      </Field>
+
+      <div className="flex justify-end pt-4 border-t">
+        <Button onClick={handleSubmit(onSave)} disabled={isPending || !isDirty} className="w-full sm:w-auto">
+          {isPending ? "Saving..." : (
+            <>
+              <Save data-icon="inline-start" />
+              Save Floor
+            </>
+          )}
+        </Button>
+      </div>
+    </div>
   )
 }
