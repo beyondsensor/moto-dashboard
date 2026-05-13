@@ -19,9 +19,9 @@ export function OrganizationCard({ organization }: OrganizationCardProps) {
     <Link href={`/authenticated/organizations/${organization.slug}`}>
       <Card className="hover:bg-accent/50 transition-colors cursor-pointer h-full">
         <CardHeader className="flex flex-row items-center gap-4">
-          <Avatar className="size-12">
-            <AvatarImage src={organization.logo_url || ""} alt={organization.name} />
-            <AvatarFallback>{initials}</AvatarFallback>
+          <Avatar className="size-12 rounded-lg">
+            <AvatarImage src={organization.logo_url || ""} alt={organization.name} className="object-contain" />
+            <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col overflow-hidden">
             <CardTitle className="text-lg truncate">{organization.name}</CardTitle>

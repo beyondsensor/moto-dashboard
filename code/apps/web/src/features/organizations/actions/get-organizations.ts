@@ -29,8 +29,24 @@ export async function getOrganizations(filters: OrganizationFilters) {
     throw new Error(`Failed to fetch organizations: ${error.message}`)
   }
 
+  // Generate signed URLs for logos
+  const organizationsWithLogos = await Promise.all(
+    (data || []).map(async (org) => {
+      if (!org.logo_url) return { ...org, logo_url: null }
+
+      const { data: signedData } = await supabase.storage
+        .from(`org-${org.id}`)
+        .createSignedUrl(org.logo_url, 3600)
+
+      return {
+        ...org,
+        logo_url: signedData?.signedUrl || null,
+      }
+    })
+  )
+
   return {
-    data: data || [],
+    data: organizationsWithLogos,
     meta: {
       total: count || 0,
       page,

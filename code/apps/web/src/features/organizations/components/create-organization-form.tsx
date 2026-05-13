@@ -26,7 +26,6 @@ export function CreateOrganizationForm() {
     defaultValues: {
       name: "",
       slug: "",
-      logoUrl: "",
     },
   })
 
@@ -98,18 +97,6 @@ export function CreateOrganizationForm() {
             <FieldError errors={errors.slug ? [errors.slug] : []} />
           </Field>
 
-          <Field data-invalid={!!errors.logoUrl}>
-            <FieldLabel htmlFor="logoUrl">Logo URL (Optional)</FieldLabel>
-            <Input
-              id="logoUrl"
-              placeholder="https://example.com/logo.png"
-              {...register("logoUrl")}
-            />
-            <FieldDescription>
-              A URL to your organization's logo image.
-            </FieldDescription>
-            <FieldError errors={errors.logoUrl ? [errors.logoUrl] : []} />
-          </Field>
 
           <div className="flex justify-end gap-3 pt-4">
             <Button

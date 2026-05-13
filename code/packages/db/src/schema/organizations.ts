@@ -6,6 +6,12 @@ export const organizations = pgTable("organizations", {
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
   logoUrl: text("logo_url"),
+  address: text("address"),
+  profile: text("profile"),
+  website: text("website"),
+  contactName: text("contact_name"),
+  contactMobile: text("contact_mobile"),
+  contactEmail: text("contact_email"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 })

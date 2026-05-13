@@ -233,28 +233,46 @@ export type Database = {
       }
       organizations: {
         Row: {
+          address: string | null
+          contact_email: string | null
+          contact_mobile: string | null
+          contact_name: string | null
           created_at: string
           id: string
           logo_url: string | null
           name: string
+          profile: string | null
           slug: string
           updated_at: string
+          website: string | null
         }
         Insert: {
+          address?: string | null
+          contact_email?: string | null
+          contact_mobile?: string | null
+          contact_name?: string | null
           created_at?: string
           id?: string
           logo_url?: string | null
           name: string
+          profile?: string | null
           slug: string
           updated_at?: string
+          website?: string | null
         }
         Update: {
+          address?: string | null
+          contact_email?: string | null
+          contact_mobile?: string | null
+          contact_name?: string | null
           created_at?: string
           id?: string
           logo_url?: string | null
           name?: string
+          profile?: string | null
           slug?: string
           updated_at?: string
+          website?: string | null
         }
         Relationships: []
       }
@@ -502,6 +520,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_org_id_from_bucket: { Args: { bucket_id: string }; Returns: string }
       get_org_role: {
         Args: { p_org_id: string }
         Returns: Database["public"]["Enums"]["org_role"]

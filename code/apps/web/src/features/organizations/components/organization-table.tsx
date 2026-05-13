@@ -41,9 +41,9 @@ export function OrganizationTable({ organizations }: OrganizationTableProps) {
                     href={`/authenticated/organizations/${org.slug}`}
                     className="flex items-center gap-3 hover:underline"
                   >
-                    <Avatar className="size-8">
-                      <AvatarImage src={org.logo_url || ""} alt={org.name} />
-                      <AvatarFallback>{initials}</AvatarFallback>
+                    <Avatar className="size-8 rounded-md">
+                      <AvatarImage src={org.logo_url || ""} alt={org.name} className="object-contain" />
+                      <AvatarFallback className="rounded-md">{initials}</AvatarFallback>
                     </Avatar>
                     <span className="font-medium">{org.name}</span>
                   </Link>

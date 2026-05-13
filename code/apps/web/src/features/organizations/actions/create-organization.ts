@@ -1,6 +1,7 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { createOrganizationSchema, CreateOrganizationValues } from "../schemas"
 import { revalidatePath } from "next/cache"
 
@@ -24,7 +25,6 @@ export async function createOrganizationAction(values: CreateOrganizationValues)
     .insert({
       name: validated.data.name,
       slug: validated.data.slug,
-      logo_url: validated.data.logoUrl || null,
     })
     .select()
     .single()
@@ -45,9 +45,23 @@ export async function createOrganizationAction(values: CreateOrganizationValues)
 
   if (memberError) {
     console.error("Error adding organization member:", memberError)
-    // We might want to rollback or just log this. Since we don't have transactions here easily,
-    // we'll just throw for now.
     throw new Error(memberError.message)
+  }
+
+  // 4. Create dedicated storage bucket
+  const adminClient = createAdminClient()
+  const bucketName = `org-${org.id}`
+  const { error: bucketError } = await adminClient.storage.createBucket(bucketName, {
+    public: false,
+    fileSizeLimit: 10485760, // 10MB
+  })
+
+  if (bucketError) {
+    console.error("Error creating organization bucket:", bucketError)
+    // We log but maybe don't want to break the whole flow if the org is already created?
+    // Actually, for consistency, we should probably have transactions, but since we don't,
+    // we'll at least inform the user.
+    throw new Error(`Organization created but failed to create storage bucket: ${bucketError.message}`)
   }
 
   revalidatePath("/authenticated/organizations")

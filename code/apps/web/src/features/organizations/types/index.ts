@@ -13,7 +13,13 @@ export interface Organization {
   id: string
   name: string
   slug: string
-  logo_url: string | null
+  logo_url?: string | null
+  address?: string | null
+  profile?: string | null
+  website?: string | null
+  contact_name?: string | null
+  contact_mobile?: string | null
+  contact_email?: string | null
   created_at: string
   updated_at: string
 }
