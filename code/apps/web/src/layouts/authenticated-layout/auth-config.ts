@@ -10,6 +10,11 @@ export const sideBarGroups: SidebarGroupProps[] = [
         icon: "LayoutDashboard",
       },
       {
+        title: "Monitor",
+        url: "/authenticated/monitor",
+        icon: "Activity",
+      },
+      {
         title: "Visitor Management",
         url: "/authenticated/visitor-management",
         icon: "IdCard",

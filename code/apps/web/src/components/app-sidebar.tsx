@@ -17,6 +17,7 @@ import {
   IdCard,
   Box,
   ListVideo,
+  Activity,
 } from "lucide-react"
 import Link from "next/link"
 import { NavMain } from "@/components/nav-main"
@@ -47,7 +48,8 @@ const iconMap = {
   Badge,
   IdCard,
   ListVideo,
-  Box
+  Box,
+  Activity
 }
 
 export type SidebarIconName = keyof typeof iconMap

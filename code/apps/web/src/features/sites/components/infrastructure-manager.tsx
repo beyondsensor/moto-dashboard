@@ -9,11 +9,14 @@ import { ZoneDetails } from "./zone-details"
 import { InfrastructureOverview } from "./infrastructure-overview"
 import { upsertBuildingAction } from "../actions/upsert-building"
 import { upsertFloorAction } from "../actions/upsert-floor"
+import { upsertFloorSeriesAction } from "../actions/upsert-floor-series"
 import { upsertZoneAction } from "../actions/upsert-zone"
 import { deleteInfrastructureAction } from "../actions/delete-infrastructure"
 import { toast } from "sonner"
 import { Building2, Layers, LayoutDashboard, MapPin } from "lucide-react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
+import { FloorSeriesForm } from "./floor-series-form"
 
 interface InfrastructureManagerProps {
   siteId: string
@@ -66,6 +69,19 @@ export function InfrastructureManager({ siteId, initialData }: InfrastructureMan
         toast.success(`${type} saved successfully`)
         setSelected({ type, item: result })
         setDialogOpen(false)
+      } catch (error: any) {
+        toast.error(error.message)
+      }
+    })
+  }
+
+  const handleSaveSeries = async (floors: any[]) => {
+    startTransition(async () => {
+      try {
+        await upsertFloorSeriesAction(siteId, floors)
+        toast.success(`${floors.length} floors created successfully`)
+        setDialogOpen(false)
+        setSelected(null)
       } catch (error: any) {
         toast.error(error.message)
       }
@@ -137,7 +153,24 @@ export function InfrastructureManager({ siteId, initialData }: InfrastructureMan
             <BuildingDetails building={selected.item} onSave={(d) => handleSave("building", d)} isPending={isPending} />
           )}
           {selected?.type === "floor" && (
-            <FloorDetails floor={selected.item} onSave={(d) => handleSave("floor", d)} isPending={isPending} />
+            <>
+              {!selected.item.id ? (
+                <Tabs defaultValue="single" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="single">Single Floor</TabsTrigger>
+                    <TabsTrigger value="series">Add Series</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="single">
+                    <FloorDetails floor={selected.item} onSave={(d) => handleSave("floor", d)} isPending={isPending} />
+                  </TabsContent>
+                  <TabsContent value="series">
+                    <FloorSeriesForm buildingId={selected.item.buildingId} onSave={handleSaveSeries} isPending={isPending} />
+                  </TabsContent>
+                </Tabs>
+              ) : (
+                <FloorDetails floor={selected.item} onSave={(d) => handleSave("floor", d)} isPending={isPending} />
+              )}
+            </>
           )}
           {selected?.type === "zone" && (
             <ZoneDetails zone={selected.item} onSave={(d) => handleSave("zone", d)} isPending={isPending} />
