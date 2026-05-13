@@ -1,11 +1,11 @@
 import { PageContent } from "@/layouts/authenticated-layout/components/page-content"
 
-export default function HomePage() {
+export default function MonitorPage() {
   return (
     <PageContent
-      breadcrumbs={[{ label: "Dashboard", href: "/authenticated/home" }]}
+      breadcrumbs={[{ label: "Monitor", href: "/authenticated/monitor" }]}
     >
-      <div>Home</div>
+      <div>Monitor</div>
     </PageContent>
   )
 }

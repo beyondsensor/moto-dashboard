@@ -11,8 +11,14 @@ import {
   LogOut,
   Command,
   LucideIcon,
+  Building,
+  Building2,
+  Badge,
+  IdCard,
+  Box,
+  ListVideo,
 } from "lucide-react"
-
+import Link from "next/link"
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
 import {
@@ -36,6 +42,12 @@ const iconMap = {
   Settings,
   HelpCircle,
   LogOut,
+  Building,
+  Building2,
+  Badge,
+  IdCard,
+  ListVideo,
+  Box
 }
 
 export type SidebarIconName = keyof typeof iconMap
@@ -71,7 +83,7 @@ export function AppSidebar({ user, groups, ...props }: AppSidebarProps) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <Link href="/authenticated/home">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                   <Command className="size-4" />
                 </div>
@@ -83,7 +95,7 @@ export function AppSidebar({ user, groups, ...props }: AppSidebarProps) {
                     Enterprise
                   </span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
