@@ -1,4 +1,4 @@
-import { UserFilters, UserWithRole } from "../types"
+import { UserFilters } from "../types"
 import { getUsers } from "../actions/get-users"
 import { UserTable } from "./user-table"
 import { UserCard } from "./user-card"
@@ -26,7 +26,7 @@ export async function UserList({ filters, organizationId }: UserListProps) {
         <Users className="size-12 text-muted-foreground mb-4" />
         <h3 className="text-lg font-medium">No users found</h3>
         <p className="text-muted-foreground max-w-sm mx-auto">
-          We couldn't find any users matching your filters. Try adjusting your search or filters.
+          We couldn&apos;t find any users matching your filters. Try adjusting your search or filters.
         </p>
       </div>
     )

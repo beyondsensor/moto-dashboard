@@ -1,21 +1,20 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { Floor } from "../types"
+import { Floor, UpsertFloorData } from "../types"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Field, FieldLabel, FieldError } from "@workspace/ui/components/field"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@workspace/ui/components/card"
-import { Layers, Save, Upload } from "lucide-react"
+import { Save, Upload } from "lucide-react"
 
 interface FloorDetailsProps {
   floor: Floor
-  onSave: (data: any) => void
+  onSave: (data: UpsertFloorData) => void
   isPending?: boolean
 }
 
 export function FloorDetails({ floor, onSave, isPending }: FloorDetailsProps) {
-  const { register, handleSubmit, formState: { errors, isDirty } } = useForm({
+  const { register, handleSubmit, formState: { errors, isDirty } } = useForm<UpsertFloorData>({
     defaultValues: {
       id: floor.id,
       buildingId: floor.buildingId,

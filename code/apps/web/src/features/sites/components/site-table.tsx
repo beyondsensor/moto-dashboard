@@ -70,7 +70,7 @@ export function SiteTable({ sites }: SiteTableProps) {
                   </div>
                 </TableCell>
                 <TableCell className="py-4">
-                  <span className="text-sm font-medium">{(site as any).organizationName || "N/A"}</span>
+                  <span className="text-sm font-medium">{site.organizationName || "N/A"}</span>
                 </TableCell>
                 <TableCell className="py-4">
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground max-w-[200px] truncate">

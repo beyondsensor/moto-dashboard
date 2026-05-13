@@ -4,7 +4,7 @@ import { UserWithRole } from "../types"
 import { Card, CardContent, CardHeader } from "@workspace/ui/components/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
 import { Badge } from "@workspace/ui/components/badge"
-import { Mail, Shield, User, MoreHorizontal } from "lucide-react"
+import { Mail, Shield, MoreHorizontal } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 import Link from "next/link"
 import {

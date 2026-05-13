@@ -7,7 +7,7 @@ import { updateAvatar } from "../actions/update-avatar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card"
 import { Button } from "@workspace/ui/components/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
-import { Image, Loader2, Upload, User } from "lucide-react"
+import { Image, Loader2, Upload } from "lucide-react"
 
 interface UserAvatarCardProps {
   user: UserDetail

@@ -1,17 +1,16 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { Zone } from "../types"
+import { Zone, UpsertZoneData } from "../types"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { Field, FieldLabel, FieldError } from "@workspace/ui/components/field"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@workspace/ui/components/card"
 import { MapPin, Save } from "lucide-react"
 
 interface ZoneDetailsProps {
   zone: Zone
-  onSave: (data: any) => void
+  onSave: (data: UpsertZoneData) => void
   isPending?: boolean
 }
 

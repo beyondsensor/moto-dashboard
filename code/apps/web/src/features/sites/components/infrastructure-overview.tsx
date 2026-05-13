@@ -2,7 +2,7 @@
 
 import { Building } from "../types"
 import { Building2, Layers, MapPin, Info } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card"
 
 interface InfrastructureOverviewProps {
   buildings: Building[]
@@ -74,8 +74,16 @@ export function InfrastructureOverview({ buildings }: InfrastructureOverviewProp
   )
 }
 
-function StatsCard({ title, value, icon, description, color }: any) {
-  const colors: any = {
+interface StatsCardProps {
+  title: string
+  value: number
+  icon: React.ReactNode
+  description: string
+  color: "blue" | "indigo" | "purple"
+}
+
+function StatsCard({ title, value, icon, description, color }: StatsCardProps) {
+  const colors: Record<string, string> = {
     blue: "bg-blue-500/10 text-blue-500 border-blue-500/20",
     indigo: "bg-indigo-500/10 text-indigo-500 border-indigo-500/20",
     purple: "bg-purple-500/10 text-purple-500 border-purple-500/20",
@@ -99,7 +107,12 @@ function StatsCard({ title, value, icon, description, color }: any) {
   )
 }
 
-function GuideItem({ title, text }: any) {
+interface GuideItemProps {
+  title: string
+  text: string
+}
+
+function GuideItem({ title, text }: GuideItemProps) {
   return (
     <li className="space-y-1">
       <span className="text-xs font-bold text-foreground/70 uppercase">{title}</span>

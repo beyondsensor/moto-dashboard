@@ -31,11 +31,11 @@ export async function SiteList({ filters }: SiteListProps) {
   return (
     <div className="flex flex-col gap-8">
       {filters.view === "list" ? (
-        <SiteTable sites={sites as any} />
+        <SiteTable sites={sites} />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {sites.map((site) => (
-            <SiteCard key={site.id} site={site as any} />
+            <SiteCard key={site.id} site={site} />
           ))}
           {sites.length === 0 && (
             <div className="col-span-full h-40 flex items-center justify-center text-muted-foreground border-2 border-dashed rounded-xl bg-muted/20">

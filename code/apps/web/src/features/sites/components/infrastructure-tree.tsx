@@ -11,7 +11,7 @@ interface InfrastructureTreeProps {
   buildings: Building[]
   selectedId?: string
   selectedType?: "building" | "floor" | "zone"
-  onSelect: (type: "building" | "floor" | "zone", item: any) => void
+  onSelect: (type: "building" | "floor" | "zone", item: InfrastructureItem) => void
   onAdd: (type: "building" | "floor" | "zone", parentId?: string) => void
   onDelete: (type: "building" | "floor" | "zone", id: string) => void
 }
@@ -54,7 +54,24 @@ export function InfrastructureTree({
   )
 }
 
-function BuildingNode({ building, selectedId, selectedType, onSelect, onAdd, onDelete }: any) {
+type InfrastructureItem = Building | Floor | Zone
+
+interface NodeProps {
+  selectedId?: string
+  selectedType?: "building" | "floor" | "zone"
+  onSelect: (type: "building" | "floor" | "zone", item: InfrastructureItem) => void
+  onAdd: (type: "building" | "floor" | "zone", parentId?: string) => void
+  onDelete: (type: "building" | "floor" | "zone", id: string) => void
+}
+
+function BuildingNode({ 
+  building, 
+  selectedId, 
+  selectedType, 
+  onSelect, 
+  onAdd, 
+  onDelete 
+}: NodeProps & { building: Building }) {
   const [isOpen, setIsOpen] = React.useState(true)
   const isSelected = selectedId === building.id && selectedType === "building"
 
@@ -83,7 +100,7 @@ function BuildingNode({ building, selectedId, selectedType, onSelect, onAdd, onD
         </div>
       </div>
       <CollapsibleContent className="pl-6 space-y-1 mt-1 border-l-2 border-muted ml-3.5">
-        {building.floors?.map((floor: any) => (
+        {building.floors?.map((floor) => (
           <FloorNode 
             key={floor.id} 
             floor={floor} 
@@ -99,7 +116,14 @@ function BuildingNode({ building, selectedId, selectedType, onSelect, onAdd, onD
   )
 }
 
-function FloorNode({ floor, selectedId, selectedType, onSelect, onAdd, onDelete }: any) {
+function FloorNode({ 
+  floor, 
+  selectedId, 
+  selectedType, 
+  onSelect, 
+  onAdd, 
+  onDelete 
+}: NodeProps & { floor: Floor }) {
   const [isOpen, setIsOpen] = React.useState(false)
   const isSelected = selectedId === floor.id && selectedType === "floor"
 
@@ -128,7 +152,7 @@ function FloorNode({ floor, selectedId, selectedType, onSelect, onAdd, onDelete 
         </div>
       </div>
       <CollapsibleContent className="pl-6 space-y-1 mt-1 border-l-2 border-muted/50 ml-3.5">
-        {floor.zones?.map((zone: any) => (
+        {floor.zones?.map((zone) => (
           <div 
             key={zone.id}
             onClick={() => onSelect("zone", zone)}

@@ -13,6 +13,12 @@ export const createSiteSchema = z.object({
 
 export type CreateSiteValues = z.infer<typeof createSiteSchema>
 
+export const siteFormSchema = createSiteSchema.extend({
+  id: z.string().optional(),
+})
+
+export type SiteFormValues = z.infer<typeof siteFormSchema>
+
 export const updateSiteSchema = createSiteSchema.partial().extend({
   id: z.string().uuid("Invalid site ID"),
 })

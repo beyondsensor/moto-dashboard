@@ -21,7 +21,6 @@ export function CreateUserForm() {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm<CreateUserValues>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {

@@ -1,7 +1,7 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
-import { UserFilters, UsersResponse } from "../types"
+import { UserFilters, UsersResponse, UserRole } from "../types"
 
 export async function getUsers(
   filters: UserFilters,
@@ -50,9 +50,10 @@ export async function getUsers(
 
   // Process data to flatten role and handle avatars
   const usersWithAvatars = await Promise.all(
-    (data || []).map(async (user: any) => {
+    (data || []).map(async (user) => {
       // Flatten role from the joined table
-      const membership = user.organization_members[0]
+      const members = user.organization_members as unknown as { role: string, organization_id: string }[]
+      const membership = members?.[0]
       
       const flattenedUser = {
         id: user.id,
@@ -63,7 +64,7 @@ export async function getUsers(
         isSystemAdmin: user.is_system_admin,
         createdAt: user.created_at,
         updatedAt: user.updated_at,
-        role: membership?.role,
+        role: membership?.role as UserRole | undefined,
         organizationId: membership?.organization_id,
       }
 

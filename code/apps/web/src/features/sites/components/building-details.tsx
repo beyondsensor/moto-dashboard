@@ -1,22 +1,21 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { Building } from "../types"
+import { Building, UpsertBuildingData } from "../types"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { Field, FieldLabel, FieldError } from "@workspace/ui/components/field"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@workspace/ui/components/card"
-import { Building2, MapPin, Save } from "lucide-react"
+import { MapPin, Save } from "lucide-react"
 
 interface BuildingDetailsProps {
   building: Building
-  onSave: (data: any) => void
-  isPending?: boolean
+  onSave: (data: UpsertBuildingData) => void
+  isPending: boolean
 }
 
 export function BuildingDetails({ building, onSave, isPending }: BuildingDetailsProps) {
-  const { register, handleSubmit, formState: { errors, isDirty } } = useForm({
+  const { register, handleSubmit, formState: { errors, isDirty } } = useForm<UpsertBuildingData>({
     defaultValues: {
       id: building.id,
       name: building.name,

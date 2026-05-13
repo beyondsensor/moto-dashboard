@@ -22,6 +22,7 @@ export interface Site {
   notes?: string | null
   createdAt: string
   updatedAt: string
+  organizationName?: string
   memberCount?: number
 }
 
@@ -69,3 +70,29 @@ export interface Zone {
   orderIndex: number
 }
 
+export interface UpsertBuildingData {
+  id?: string
+  name: string
+  description?: string | null
+  address?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  orderIndex?: number
+}
+
+export interface UpsertFloorData {
+  id?: string
+  buildingId: string
+  name: string
+  levelNumber?: number | null
+  orderIndex?: number
+  floorPlanUrl?: string | null
+}
+
+export interface UpsertZoneData {
+  id?: string
+  floorId: string
+  name: string
+  description?: string | null
+  orderIndex?: number
+}

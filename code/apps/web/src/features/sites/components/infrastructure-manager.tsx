@@ -1,22 +1,20 @@
 "use client"
 
-import React, { useState, useTransition } from "react"
-import { Building } from "../types"
+import React, { useState } from "react"
+import { Building, Floor, Zone, UpsertFloorData } from "../types"
 import { InfrastructureTree } from "./infrastructure-tree"
 import { BuildingDetails } from "./building-details"
 import { FloorDetails } from "./floor-details"
 import { ZoneDetails } from "./zone-details"
 import { InfrastructureOverview } from "./infrastructure-overview"
-import { upsertBuildingAction } from "../actions/upsert-building"
-import { upsertFloorAction } from "../actions/upsert-floor"
-import { upsertFloorSeriesAction } from "../actions/upsert-floor-series"
-import { upsertZoneAction } from "../actions/upsert-zone"
-import { deleteInfrastructureAction } from "../actions/delete-infrastructure"
+import { useInfrastructure } from "../hooks/use-infrastructure"
 import { toast } from "sonner"
-import { Building2, Layers, LayoutDashboard, MapPin } from "lucide-react"
+import { Building2, Layers, MapPin } from "lucide-react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
 import { FloorSeriesForm } from "./floor-series-form"
+
+type InfrastructureItem = Building | Floor | Zone
 
 interface InfrastructureManagerProps {
   siteId: string
@@ -24,19 +22,40 @@ interface InfrastructureManagerProps {
 }
 
 export function InfrastructureManager({ siteId, initialData }: InfrastructureManagerProps) {
-  const [selected, setSelected] = useState<{ type: "building" | "floor" | "zone", item: any } | null>(null)
+  const [selected, setSelected] = useState<{ type: "building" | "floor" | "zone", item: InfrastructureItem } | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [isPending, startTransition] = useTransition()
+  
+  const { 
+    query, 
+    upsertBuilding, 
+    upsertFloor, 
+    upsertFloorSeries, 
+    upsertZone, 
+    deleteItem 
+  } = useInfrastructure(siteId)
 
-  const handleSelect = (type: "building" | "floor" | "zone", item: any) => {
+  const buildings = query.data || initialData
+  const isPending = upsertBuilding.isPending || 
+                    upsertFloor.isPending || 
+                    upsertFloorSeries.isPending || 
+                    upsertZone.isPending || 
+                    deleteItem.isPending
+
+  const handleSelect = (type: "building" | "floor" | "zone", item: InfrastructureItem) => {
     setSelected({ type, item })
     setDialogOpen(true)
   }
 
   const handleAdd = (type: "building" | "floor" | "zone", parentId?: string) => {
-    const newItem: any = { name: "", orderIndex: 0 }
-    if (type === "floor") newItem.buildingId = parentId
-    if (type === "zone") newItem.floorId = parentId
+    let newItem: InfrastructureItem
+    if (type === "building") {
+      newItem = { id: "", siteId, name: "", orderIndex: 0 } as Building
+    } else if (type === "floor") {
+      newItem = { id: "", buildingId: parentId || "", name: "", orderIndex: 0 } as Floor
+    } else {
+      newItem = { id: "", floorId: parentId || "", name: "", orderIndex: 0 } as Zone
+    }
+    
     setSelected({ type, item: newItem })
     setDialogOpen(true)
   }
@@ -44,46 +63,39 @@ export function InfrastructureManager({ siteId, initialData }: InfrastructureMan
   const handleDelete = async (type: "building" | "floor" | "zone", id: string) => {
     if (!confirm(`Are you sure you want to delete this ${type}? All nested items will also be removed.`)) return
 
-    startTransition(async () => {
-      try {
-        await deleteInfrastructureAction(siteId, type, id)
+    deleteItem.mutate({ type, id }, {
+      onSuccess: () => {
         toast.success(`${type} deleted successfully`)
         if (selected?.item?.id === id) {
           setSelected(null)
           setDialogOpen(false)
         }
-      } catch (error: any) {
-        toast.error(error.message)
       }
     })
   }
 
   const handleSave = async (type: "building" | "floor" | "zone", itemData: any) => {
-    startTransition(async () => {
-      try {
-        let result
-        if (type === "building") result = await upsertBuildingAction(siteId, itemData)
-        if (type === "floor") result = await upsertFloorAction(siteId, itemData)
-        if (type === "zone") result = await upsertZoneAction(siteId, itemData)
-        
-        toast.success(`${type} saved successfully`)
-        setSelected({ type, item: result })
-        setDialogOpen(false)
-      } catch (error: any) {
-        toast.error(error.message)
-      }
-    })
+    const onSuccess = (result: InfrastructureItem) => {
+      toast.success(`${type} saved successfully`)
+      setSelected({ type, item: result })
+      setDialogOpen(false)
+    }
+
+    if (type === "building") {
+      upsertBuilding.mutate(itemData as Building, { onSuccess })
+    } else if (type === "floor") {
+      upsertFloor.mutate(itemData as Floor, { onSuccess })
+    } else if (type === "zone") {
+      upsertZone.mutate(itemData as Zone, { onSuccess })
+    }
   }
 
-  const handleSaveSeries = async (floors: any[]) => {
-    startTransition(async () => {
-      try {
-        await upsertFloorSeriesAction(siteId, floors)
+  const handleSaveSeries = async (floors: UpsertFloorData[]) => {
+    upsertFloorSeries.mutate(floors, {
+      onSuccess: () => {
         toast.success(`${floors.length} floors created successfully`)
         setDialogOpen(false)
         setSelected(null)
-      } catch (error: any) {
-        toast.error(error.message)
       }
     })
   }
@@ -120,7 +132,7 @@ export function InfrastructureManager({ siteId, initialData }: InfrastructureMan
       {/* Sidebar Tree */}
       <div className="lg:col-span-4 xl:col-span-3 border-r pr-6 overflow-y-auto max-h-[calc(100vh-250px)]">
         <InfrastructureTree 
-          buildings={initialData}
+          buildings={buildings}
           selectedId={selected?.item?.id}
           selectedType={selected?.type}
           onSelect={handleSelect}
@@ -131,7 +143,7 @@ export function InfrastructureManager({ siteId, initialData }: InfrastructureMan
 
       {/* Main Content Area - Site Overview */}
       <div className="lg:col-span-8 xl:col-span-9 overflow-y-auto max-h-[calc(100vh-250px)] px-6 py-4">
-        <InfrastructureOverview buildings={initialData} />
+        <InfrastructureOverview buildings={buildings} />
       </div>
 
       {/* Dialog for Add/Edit */}
@@ -150,7 +162,7 @@ export function InfrastructureManager({ siteId, initialData }: InfrastructureMan
           </DialogHeader>
 
           {selected?.type === "building" && (
-            <BuildingDetails building={selected.item} onSave={(d) => handleSave("building", d)} isPending={isPending} />
+            <BuildingDetails building={selected.item as Building} onSave={(d) => handleSave("building", d)} isPending={isPending} />
           )}
           {selected?.type === "floor" && (
             <>
@@ -161,19 +173,19 @@ export function InfrastructureManager({ siteId, initialData }: InfrastructureMan
                     <TabsTrigger value="series">Add Series</TabsTrigger>
                   </TabsList>
                   <TabsContent value="single">
-                    <FloorDetails floor={selected.item} onSave={(d) => handleSave("floor", d)} isPending={isPending} />
+                    <FloorDetails floor={selected.item as Floor} onSave={(d) => handleSave("floor", d)} isPending={isPending} />
                   </TabsContent>
                   <TabsContent value="series">
-                    <FloorSeriesForm buildingId={selected.item.buildingId} onSave={handleSaveSeries} isPending={isPending} />
+                    <FloorSeriesForm buildingId={(selected.item as Floor).buildingId} onSave={handleSaveSeries} isPending={isPending} />
                   </TabsContent>
                 </Tabs>
               ) : (
-                <FloorDetails floor={selected.item} onSave={(d) => handleSave("floor", d)} isPending={isPending} />
+                <FloorDetails floor={selected.item as Floor} onSave={(d) => handleSave("floor", d)} isPending={isPending} />
               )}
             </>
           )}
           {selected?.type === "zone" && (
-            <ZoneDetails zone={selected.item} onSave={(d) => handleSave("zone", d)} isPending={isPending} />
+            <ZoneDetails zone={selected.item as Zone} onSave={(d) => handleSave("zone", d)} isPending={isPending} />
           )}
         </DialogContent>
       </Dialog>

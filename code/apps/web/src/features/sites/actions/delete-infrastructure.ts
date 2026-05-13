@@ -14,7 +14,7 @@ export async function deleteInfrastructureAction(siteId: string, type: "building
   }
 
   const { error } = await supabase
-    .from(table as any)
+    .from(type === "building" ? "buildings" : type === "floor" ? "floors" : "zones")
     .delete()
     .eq("id", id)
 

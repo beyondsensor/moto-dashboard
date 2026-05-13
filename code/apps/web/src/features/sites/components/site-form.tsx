@@ -2,18 +2,15 @@
 
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { createSiteSchema, CreateSiteValues, updateSiteSchema, UpdateSiteValues } from "../schemas"
-import { createSiteAction } from "../actions/create-site"
-import { updateSiteAction } from "../actions/update-site"
+import { createSiteSchema, updateSiteSchema, UpdateSiteValues, siteFormSchema, SiteFormValues } from "../schemas"
+import { useSiteMutations } from "../hooks/use-site-mutations"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Textarea } from "@workspace/ui/components/textarea"
-import { Field, FieldLabel, FieldDescription, FieldError } from "@workspace/ui/components/field"
+import { Field, FieldLabel, FieldError } from "@workspace/ui/components/field"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@workspace/ui/components/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select"
-import { toast } from "sonner"
 
 interface SiteFormProps {
   initialData?: UpdateSiteValues
@@ -22,7 +19,8 @@ interface SiteFormProps {
 
 export function SiteForm({ initialData, organizations }: SiteFormProps) {
   const router = useRouter()
-  const [isPending, setIsPending] = useState(false)
+  const { createMutation, updateMutation } = useSiteMutations()
+  const isPending = createMutation.isPending || updateMutation.isPending
   const isEditing = !!initialData
 
   const {
@@ -31,8 +29,8 @@ export function SiteForm({ initialData, organizations }: SiteFormProps) {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<CreateSiteValues>({
-    resolver: zodResolver((isEditing ? updateSiteSchema : createSiteSchema) as any),
+  } = useForm<SiteFormValues>({
+    resolver: zodResolver(siteFormSchema),
     defaultValues: initialData || {
       name: "",
       code: "",
@@ -42,22 +40,11 @@ export function SiteForm({ initialData, organizations }: SiteFormProps) {
     },
   })
 
-  const onSubmit = async (values: CreateSiteValues) => {
-    setIsPending(true)
-    try {
-      if (isEditing) {
-        await updateSiteAction({ ...values, id: initialData.id } as UpdateSiteValues)
-        toast.success("Site updated successfully")
-      } else {
-        await createSiteAction(values)
-        toast.success("Site created successfully")
-      }
-      router.push("/authenticated/sites")
-      router.refresh()
-    } catch (err: any) {
-      toast.error(err.message || "Something went wrong")
-    } finally {
-      setIsPending(false)
+  const onSubmit = (values: SiteFormValues) => {
+    if (isEditing && initialData) {
+      updateMutation.mutate({ ...values, id: initialData.id } as UpdateSiteValues)
+    } else {
+      createMutation.mutate(values)
     }
   }
 

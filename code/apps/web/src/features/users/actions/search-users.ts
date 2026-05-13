@@ -3,8 +3,7 @@
 import { createClient } from "@/lib/supabase/server"
 
 export async function searchUsersAction(
-  query: string,
-  excludeOrganizationId?: string
+  query: string
 ) {
   const supabase = await createClient()
 
@@ -38,7 +37,7 @@ export async function searchUsersAction(
   // so we'll do a quick secondary check or just return all and handle it.
   // For simplicity and performance with small results, we'll return all for now.
 
-  return data.map((user: any) => ({
+  return (data || []).map((user) => ({
     id: user.id,
     displayName:
       user.display_name ||

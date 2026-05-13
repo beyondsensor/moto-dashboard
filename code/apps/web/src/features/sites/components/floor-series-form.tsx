@@ -4,17 +4,25 @@ import React, { useMemo } from "react"
 import { useForm, useWatch } from "react-hook-form"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
-import { Field, FieldLabel, FieldError } from "@workspace/ui/components/field"
+import { Field, FieldLabel } from "@workspace/ui/components/field"
 import { Save, Info } from "lucide-react"
+import { UpsertFloorData } from "../types"
 
 interface FloorSeriesFormProps {
   buildingId: string
-  onSave: (data: any[]) => void
+  onSave: (data: UpsertFloorData[]) => void
   isPending?: boolean
 }
 
+interface FormData {
+  prefix: string
+  startLevel: number
+  endLevel: number
+  orderIndexStart: number
+}
+
 export function FloorSeriesForm({ buildingId, onSave, isPending }: FloorSeriesFormProps) {
-  const { register, handleSubmit, control, formState: { errors } } = useForm({
+  const { register, handleSubmit, control } = useForm<FormData>({
     defaultValues: {
       prefix: "Level ",
       startLevel: 1,

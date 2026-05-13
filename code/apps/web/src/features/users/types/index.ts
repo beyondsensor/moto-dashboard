@@ -50,3 +50,13 @@ export interface UsersResponse {
     totalPages: number
   }
 }
+
+export interface UserOrganization {
+  membershipId: string
+  role: UserRole
+  joinedAt: string
+  id: string
+  name: string
+  slug: string
+  email: string
+}

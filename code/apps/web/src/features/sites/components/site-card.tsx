@@ -29,7 +29,7 @@ export function SiteCard({ site }: SiteCardProps) {
             )}
           </div>
           <p className="text-xs text-muted-foreground font-medium">
-            {(site as any).organizationName || "No Organization"}
+            {site.organizationName || "No Organization"}
           </p>
         </CardHeader>
         <CardContent className="p-4 pt-0 flex-1">

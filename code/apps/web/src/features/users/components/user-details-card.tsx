@@ -7,7 +7,7 @@ import * as z from "zod"
 import { toast } from "sonner"
 import { UserDetail } from "../types"
 import { updateUser } from "../actions/update-user"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@workspace/ui/components/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
@@ -60,7 +60,7 @@ export function UserDetailsCard({ user }: UserDetailsCardProps) {
           </div>
           <CardTitle className="text-xl">Personal Information</CardTitle>
         </div>
-        <CardDescription>Update the user's name and display name.</CardDescription>
+        <CardDescription>Update the user&apos;s name and display name.</CardDescription>
       </CardHeader>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <CardContent className="grid gap-4">

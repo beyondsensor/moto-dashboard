@@ -23,11 +23,14 @@ export async function getUserSites(userId: string) {
     throw new Error(`Failed to fetch user sites: ${error.message}`)
   }
 
-  return (data || []).map((item: any) => ({
-    id: item.sites.id,
-    name: item.sites.name,
-    code: item.sites.code,
-    address: item.sites.address,
-    role: item.role,
-  }))
+  return (data || []).map((item) => {
+    const site = item.sites as unknown as { id: string, name: string, code: string, address: string }
+    return {
+      id: site.id,
+      name: site.name,
+      code: site.code,
+      address: site.address,
+      role: item.role,
+    }
+  })
 }

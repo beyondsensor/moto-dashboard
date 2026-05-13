@@ -10,7 +10,7 @@ import { useCallback, useTransition, useEffect, useState } from "react"
 export function UserFilters() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [isPending, startTransition] = useTransition()
+  const [, startTransition] = useTransition()
   const [searchValue, setSearchValue] = useState(searchParams.get("search") || "")
 
   const createQueryString = useCallback(

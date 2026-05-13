@@ -25,18 +25,21 @@ export async function getSiteInfrastructureAction(siteId: string) {
   // Sort floors and zones by order_index and map to camelCase
   const sortedData = (data || []).map(building => ({
     ...building,
+    siteId: building.site_id,
     orderIndex: building.order_index,
     floors: (building.floors || []).sort((a: any, b: any) => (a.order_index || 0) - (b.order_index || 0)).map((floor: any) => ({
       ...floor,
+      buildingId: floor.building_id,
       orderIndex: floor.order_index,
       levelNumber: floor.level_number,
       floorPlanUrl: floor.floor_plan_url,
       zones: (floor.zones || []).sort((a: any, b: any) => (a.order_index || 0) - (b.order_index || 0)).map((zone: any) => ({
         ...zone,
+        floorId: zone.floor_id,
         orderIndex: zone.order_index
       }))
     }))
   }))
 
-  return sortedData
+  return sortedData as any
 }

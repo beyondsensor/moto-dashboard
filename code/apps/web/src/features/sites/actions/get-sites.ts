@@ -1,7 +1,7 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
-import { SiteFilters } from "../types"
+import { SiteFilters, Site } from "../types"
 
 export async function getSitesAction(filters: SiteFilters) {
   const supabase = await createClient()
@@ -11,13 +11,14 @@ export async function getSitesAction(filters: SiteFilters) {
 
   // We use a join or separate count to get member counts if needed
   // For now, let's just get the sites
-  let query = supabase
-    .from("sites")
-    .select(`
+  let query = supabase.from("sites").select(
+    `
       *,
       organization:organizations(name),
       site_members(count)
-    `, { count: "exact" })
+    `,
+    { count: "exact" }
+  )
 
   if (search) {
     query = query.ilike("name", `%${search}%`)
@@ -36,10 +37,13 @@ export async function getSitesAction(filters: SiteFilters) {
     throw new Error(`Failed to fetch sites: ${error.message}`)
   }
 
-  const formattedData = (data || []).map(site => ({
+  const formattedData: Site[] = (data || []).map((site) => ({
     ...site,
+    organizationId: site.organization_id,
+    createdAt: site.created_at,
+    updatedAt: site.updated_at,
     organizationName: site.organization?.name,
-    memberCount: site.site_members?.[0]?.count || 0
+    memberCount: site.site_members?.[0]?.count || 0,
   }))
 
   return {

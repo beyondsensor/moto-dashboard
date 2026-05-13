@@ -2,8 +2,9 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
-
-export async function upsertZoneAction(siteId: string, data: { id?: string, floorId: string, name: string, description?: string, orderIndex?: number }) {
+import { UpsertZoneData } from "../types"
+ 
+export async function upsertZoneAction(siteId: string, data: UpsertZoneData) {
   const supabase = await createClient()
 
   const { id, floorId, ...payload } = data
@@ -37,5 +38,11 @@ export async function upsertZoneAction(siteId: string, data: { id?: string, floo
   if (result.error) throw new Error(result.error.message)
   
   revalidatePath(`/authenticated/sites/${siteId}/infrastructure`)
-  return result.data
+  
+  const zone = result.data
+  return {
+    ...zone,
+    floorId: zone.floor_id,
+    orderIndex: zone.order_index,
+  } as any
 }

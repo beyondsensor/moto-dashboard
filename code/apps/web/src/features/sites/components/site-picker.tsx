@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Check, Building2, Building, Search, Loader2, Grid2X2, MapPin } from "lucide-react"
+import { Check, Building2, Building, Search, Loader2, Grid2X2 } from "lucide-react"
 import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -14,36 +14,15 @@ import {
 } from "@workspace/ui/components/dialog"
 import { Input } from "@workspace/ui/components/input"
 import { useSite } from "../providers/site-context"
-import { getSitesAction } from "../actions/get-sites"
-
-interface Site {
-  id: string
-  name: string
-  organizationName?: string
-}
+import { useSites } from "../hooks/use-sites"
+import { Site } from "../types"
 
 export function SitePicker() {
   const [open, setOpen] = React.useState(false)
-  const [sites, setSites] = React.useState<Site[]>([])
-  const [loading, setLoading] = React.useState(true)
   const [searchQuery, setSearchQuery] = React.useState("")
   const { siteId, setSiteId } = useSite()
-
-  React.useEffect(() => {
-    async function fetchSites() {
-      try {
-        const result = await getSitesAction({ page: 1, pageSize: 200, view: "list" })
-        setSites(result.data)
-      } catch (error) {
-        console.error("Failed to fetch sites:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    if (open || sites.length === 0) {
-      fetchSites()
-    }
-  }, [open, sites.length])
+  const { data, isLoading: loading } = useSites({ page: 1, pageSize: 200, view: "list" })
+  const sites = React.useMemo(() => data?.data || [], [data])
 
   const selectedSite = React.useMemo(() => 
     sites.find((site) => site.id === siteId),
