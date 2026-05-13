@@ -22,6 +22,7 @@ export interface OrganizationMember {
 
 export type UserWithRole = UserProfile & {
   role?: UserRole
+  organizationId?: string
 }
 
 export type UserDetail = UserWithRole & {

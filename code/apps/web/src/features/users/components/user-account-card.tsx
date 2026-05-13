@@ -9,7 +9,7 @@ interface UserAccountCardProps {
 
 export function UserAccountCard({ user }: UserAccountCardProps) {
   return (
-    <Card shadow="none">
+    <Card>
       <CardHeader>
         <div className="flex items-center gap-2.5">
           <div className="p-1.5 rounded-md bg-primary/10 text-primary">

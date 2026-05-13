@@ -52,7 +52,7 @@ export function UserAvatarCard({ user }: UserAvatarCardProps) {
   const initials = (`${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}` || user.email?.[0] || "U").toUpperCase()
 
   return (
-    <Card shadow="none">
+    <Card>
       <CardHeader>
         <div className="flex items-center gap-2.5">
           <div className="p-1.5 rounded-md bg-primary/10 text-primary">

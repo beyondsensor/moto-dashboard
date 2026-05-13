@@ -50,7 +50,7 @@ export function CreateUserForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
-      <Card shadow="none">
+      <Card>
         <CardHeader>
           <div className="flex items-center gap-2.5">
             <div className="p-1.5 rounded-md bg-primary/10 text-primary">

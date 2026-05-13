@@ -7,7 +7,7 @@ export const createUserSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   displayName: z.string().min(1, "Display name is required"),
-  isSystemAdmin: z.boolean().default(false),
+  isSystemAdmin: z.boolean(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"],
