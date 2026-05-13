@@ -18,9 +18,9 @@ export function UserNav({ userId }: UserNavProps) {
       active: pathname === `/authenticated/users/${userId}`,
     },
     {
-      title: "Assigned Sites",
-      href: `/authenticated/users/${userId}/assigned-sites`,
-      active: pathname === `/authenticated/users/${userId}/assigned-sites`,
+      title: "Organizations",
+      href: `/authenticated/users/${userId}/organizations`,
+      active: pathname === `/authenticated/users/${userId}/organizations`,
     },
     {
       title: "Danger",

@@ -17,7 +17,7 @@ export async function getUsers(
   let query = supabase.from("user_profiles").select(
     `
       *,
-      organization_members!inner(role, organization_id)
+      organization_members(role, organization_id)
     `,
     { count: "exact" }
   )
@@ -53,12 +53,19 @@ export async function getUsers(
     (data || []).map(async (user: any) => {
       // Flatten role from the joined table
       const membership = user.organization_members[0]
+      
       const flattenedUser = {
-        ...user,
+        id: user.id,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        displayName: user.display_name,
+        isSystemAdmin: user.is_system_admin,
+        createdAt: user.created_at,
+        updatedAt: user.updated_at,
         role: membership?.role,
         organizationId: membership?.organization_id,
       }
-      delete flattenedUser.organization_members
 
       // Handle avatar signed URL if exists
       if (user.avatar_url) {

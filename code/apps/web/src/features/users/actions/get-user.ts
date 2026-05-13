@@ -26,29 +26,33 @@ export async function getUser(userId: string): Promise<UserDetail> {
   }
 
   // Process data
-  const membership = user.organization_members?.[0]
+  const { organization_members, ...rest } = user
+  const membership = organization_members?.[0]
   const flattenedUser = {
-    ...user,
+    id: rest.id,
+    email: rest.email,
+    firstName: rest.first_name,
+    lastName: rest.last_name,
+    displayName: rest.display_name,
+    isSystemAdmin: rest.is_system_admin,
+    createdAt: rest.created_at,
+    updatedAt: rest.updated_at,
     role: membership?.role,
     organizationId: membership?.organization_id,
     organizationName: membership?.organizations?.name,
   }
-  delete flattenedUser.organization_members
 
   // Handle avatar signed URL if exists
+  let avatarUrl: string | null = null
   if (user.avatar_url) {
     const { data: signedData } = await supabase.storage
       .from("app-data")
       .createSignedUrl(user.avatar_url, 3600)
-
-    return {
-      ...flattenedUser,
-      avatarUrl: signedData?.signedUrl || null,
-    } as UserDetail
+    avatarUrl = signedData?.signedUrl || null
   }
 
   return {
     ...flattenedUser,
-    avatarUrl: null,
+    avatarUrl,
   } as UserDetail
 }

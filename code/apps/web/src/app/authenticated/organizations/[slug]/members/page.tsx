@@ -1,35 +1,61 @@
+import { notFound } from "next/navigation"
+import { getOrganizationBySlug } from "@/features/organizations/actions/get-organization"
+import { getOrganizationMembers } from "@/features/organizations/actions/get-organization-members"
+import { AddMemberDialog } from "@/features/organizations/components/add-member-dialog"
+import { OrganizationMemberTable } from "@/features/organizations/components/organization-member-table"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@workspace/ui/components/card"
-import { Button } from "@workspace/ui/components/button"
-import { Users, UserPlus } from "lucide-react"
+import { Users } from "lucide-react"
+import { OrganizationMemberFilters } from "@/features/organizations/components/organization-member-filters"
 
-export default function MembersPage() {
+interface PageProps {
+  params: Promise<{
+    slug: string
+  }>
+  searchParams: Promise<{
+    page?: string
+    search?: string
+    role?: string
+  }>
+}
+
+
+export default async function MembersPage({ params, searchParams }: PageProps) {
+  const { slug } = await params
+  const { page, search, role } = await searchParams
+
+  const organization = await getOrganizationBySlug(slug)
+
+  if (!organization) {
+    notFound()
+  }
+
+  const { data: members, meta } = await getOrganizationMembers(organization.id, {
+    page: page ? parseInt(page) : 1,
+    pageSize: 20,
+    search: search || "",
+    role: (role as any) || "all",
+  })
+
   return (
-    <div className="grid gap-8">
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+    <div className="container mx-auto py-6 max-w-7xl">
+      <Card className="border shadow-sm bg-card">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-8 border-b">
           <div>
-            <div className="flex items-center gap-2">
-              <Users className="size-5 text-primary" />
-              <CardTitle>Organization Members</CardTitle>
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-primary/10 text-primary shadow-sm ring-1 ring-primary/20">
+                <Users className="size-6" />
+              </div>
+              <CardTitle className="text-2xl font-bold tracking-tight">Organization Members</CardTitle>
             </div>
-            <CardDescription>
-              Manage the people who have access to this organization.
+            <CardDescription className="mt-2 text-base text-muted-foreground">
+              Manage the team members and their access levels for {organization.name}.
             </CardDescription>
           </div>
-          <Button size="sm">
-            <UserPlus className="size-4 mr-2" />
-            Invite Member
-          </Button>
+          <AddMemberDialog organizationId={organization.id} />
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-col items-center justify-center py-12 text-center border-2 border-dashed rounded-lg">
-            <Users className="size-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium">No members found</h3>
-            <p className="text-muted-foreground max-w-sm mx-auto mb-6">
-              Start by inviting your team members to collaborate on this organization.
-            </p>
-            <Button variant="outline">Invite Your First Member</Button>
-          </div>
+        <CardContent className="pt-8">
+          <OrganizationMemberFilters />
+          <OrganizationMemberTable members={members} />
         </CardContent>
       </Card>
     </div>

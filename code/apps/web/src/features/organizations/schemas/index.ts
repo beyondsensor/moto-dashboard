@@ -12,3 +12,10 @@ export const createOrganizationSchema = z.object({
 })
 
 export type CreateOrganizationValues = z.infer<typeof createOrganizationSchema>
+
+export const addMemberSchema = z.object({
+  userIds: z.array(z.string()).min(1, "At least one user must be selected"),
+  role: z.enum(["owner", "admin", "member"]).default("member"),
+})
+
+export type AddMemberValues = z.infer<typeof addMemberSchema>
