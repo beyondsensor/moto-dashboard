@@ -1,4 +1,4 @@
-import { pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
+import { boolean, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
 import { userProfiles } from "./user-profiles"
 
 export const organizations = pgTable("organizations", {
@@ -12,6 +12,7 @@ export const organizations = pgTable("organizations", {
   contactName: text("contact_name"),
   contactMobile: text("contact_mobile"),
   contactEmail: text("contact_email"),
+  isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 })

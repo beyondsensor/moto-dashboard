@@ -43,7 +43,9 @@ export function NavMain({
       )}
       <SidebarMenu>
         {items.map((item) => {
-          const isActive = mounted ? (pathname === item.url || item.isActive) : item.isActive
+          const isActive = mounted 
+            ? (pathname === item.url || pathname.startsWith(item.url + "/") || item.isActive) 
+            : item.isActive
 
           return (
             <SidebarMenuItem 

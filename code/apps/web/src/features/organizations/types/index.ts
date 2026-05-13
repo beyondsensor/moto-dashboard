@@ -20,6 +20,7 @@ export interface Organization {
   contact_name?: string | null
   contact_mobile?: string | null
   contact_email?: string | null
+  is_active: boolean
   created_at: string
   updated_at: string
 }

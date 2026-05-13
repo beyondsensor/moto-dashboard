@@ -22,22 +22,10 @@ interface OrganizationDetailsFormProps {
 export function OrganizationDetailsForm({ organization }: OrganizationDetailsFormProps) {
   const router = useRouter()
 
-  const { mutateAsync, isPending } = useMutation({
-    mutationFn: (values: CreateOrganizationValues) => updateOrganizationAction(organization.id, values),
-    onSuccess: (updated) => {
-      toast.success("Organization updated successfully")
-      if (updated.slug !== organization.slug) {
-        router.push(`/authenticated/organizations/${updated.slug}`)
-      }
-    },
-    onError: (err: any) => {
-      toast.error(err.message || "Failed to update organization")
-    },
-  })
-
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isDirty },
   } = useForm<CreateOrganizationValues>({
     resolver: zodResolver(createOrganizationSchema),
@@ -53,6 +41,29 @@ export function OrganizationDetailsForm({ organization }: OrganizationDetailsFor
     },
   })
 
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: (values: CreateOrganizationValues) => updateOrganizationAction(organization.id, values),
+    onSuccess: (updated) => {
+      toast.success("Organization updated successfully")
+      reset({
+        name: updated.name,
+        slug: updated.slug,
+        profile: updated.profile || "",
+        website: updated.website || "",
+        address: updated.address || "",
+        contact_name: updated.contact_name || "",
+        contact_mobile: updated.contact_mobile || "",
+        contact_email: updated.contact_email || "",
+      })
+      if (updated.slug !== organization.slug) {
+        router.push(`/authenticated/organizations/${updated.slug}`)
+      }
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Failed to update organization")
+    },
+  })
+
   const onSubmit = async (values: CreateOrganizationValues) => {
     await mutateAsync(values)
   }
@@ -62,9 +73,11 @@ export function OrganizationDetailsForm({ organization }: OrganizationDetailsFor
       {/* General Information */}
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-2">
-            <Info className="size-5 text-primary" />
-            <CardTitle>General Information</CardTitle>
+          <div className="flex items-center gap-2.5">
+            <div className="p-1.5 rounded-md bg-primary/10 text-primary">
+              <Info className="size-4" />
+            </div>
+            <CardTitle className="text-xl">General Information</CardTitle>
           </div>
           <CardDescription>
             Update your organization's basic details and public presence.
@@ -80,8 +93,8 @@ export function OrganizationDetailsForm({ organization }: OrganizationDetailsFor
 
             <Field data-invalid={!!errors.slug}>
               <FieldLabel htmlFor="slug">Organization Slug</FieldLabel>
-              <div className="relative flex items-center">
-                <span className="absolute left-3 text-muted-foreground select-none">/</span>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground select-none">/</span>
                 <Input id="slug" className="pl-6" {...register("slug")} placeholder="acme-corp" />
               </div>
               <FieldError errors={errors.slug ? [errors.slug] : []} />
@@ -90,8 +103,8 @@ export function OrganizationDetailsForm({ organization }: OrganizationDetailsFor
 
           <Field data-invalid={!!errors.website}>
             <FieldLabel htmlFor="website">Website</FieldLabel>
-            <div className="relative flex items-center">
-              <Globe className="absolute left-3 size-4 text-muted-foreground" />
+            <div className="relative">
+              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
               <Input id="website" className="pl-9" {...register("website")} placeholder="https://acme.com" />
             </div>
             <FieldError errors={errors.website ? [errors.website] : []} />
@@ -102,9 +115,11 @@ export function OrganizationDetailsForm({ organization }: OrganizationDetailsFor
       {/* Organization Profile */}
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-2">
-            <User className="size-5 text-primary" />
-            <CardTitle>Organization Profile</CardTitle>
+          <div className="flex items-center gap-2.5">
+            <div className="p-1.5 rounded-md bg-primary/10 text-primary">
+              <User className="size-4" />
+            </div>
+            <CardTitle className="text-xl">Organization Profile</CardTitle>
           </div>
           <CardDescription>
             Provide a brief description or profile of your organization.
@@ -127,9 +142,11 @@ export function OrganizationDetailsForm({ organization }: OrganizationDetailsFor
       {/* Organization Address */}
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-2">
-            <MapPin className="size-5 text-primary" />
-            <CardTitle>Organization Address</CardTitle>
+          <div className="flex items-center gap-2.5">
+            <div className="p-1.5 rounded-md bg-primary/10 text-primary">
+              <MapPin className="size-4" />
+            </div>
+            <CardTitle className="text-xl">Organization Address</CardTitle>
           </div>
           <CardDescription>
             The physical location or registered office address.
@@ -152,9 +169,11 @@ export function OrganizationDetailsForm({ organization }: OrganizationDetailsFor
       {/* Primary Contact */}
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-2">
-            <Mail className="size-5 text-primary" />
-            <CardTitle>Primary Contact Person</CardTitle>
+          <div className="flex items-center gap-2.5">
+            <div className="p-1.5 rounded-md bg-primary/10 text-primary">
+              <Mail className="size-4" />
+            </div>
+            <CardTitle className="text-xl">Primary Contact Person</CardTitle>
           </div>
           <CardDescription>
             Details of the main person to contact regarding this organization.
@@ -163,8 +182,8 @@ export function OrganizationDetailsForm({ organization }: OrganizationDetailsFor
         <CardContent className="grid gap-6">
           <Field data-invalid={!!errors.contact_name}>
             <FieldLabel htmlFor="contact_name">Full Name</FieldLabel>
-            <div className="relative flex items-center">
-              <User className="absolute left-3 size-4 text-muted-foreground" />
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
               <Input id="contact_name" className="pl-9" {...register("contact_name")} placeholder="John Doe" />
             </div>
             <FieldError errors={errors.contact_name ? [errors.contact_name] : []} />
@@ -173,8 +192,8 @@ export function OrganizationDetailsForm({ organization }: OrganizationDetailsFor
           <div className="grid md:grid-cols-2 gap-6">
             <Field data-invalid={!!errors.contact_email}>
               <FieldLabel htmlFor="contact_email">Email Address</FieldLabel>
-              <div className="relative flex items-center">
-                <Mail className="absolute left-3 size-4 text-muted-foreground" />
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                 <Input id="contact_email" className="pl-9" {...register("contact_email")} placeholder="john@acme.com" />
               </div>
               <FieldError errors={errors.contact_email ? [errors.contact_email] : []} />
@@ -182,8 +201,8 @@ export function OrganizationDetailsForm({ organization }: OrganizationDetailsFor
 
             <Field data-invalid={!!errors.contact_mobile}>
               <FieldLabel htmlFor="contact_mobile">Mobile Number</FieldLabel>
-              <div className="relative flex items-center">
-                <Phone className="absolute left-3 size-4 text-muted-foreground" />
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                 <Input id="contact_mobile" className="pl-9" {...register("contact_mobile")} placeholder="+1 234 567 890" />
               </div>
               <FieldError errors={errors.contact_mobile ? [errors.contact_mobile] : []} />
