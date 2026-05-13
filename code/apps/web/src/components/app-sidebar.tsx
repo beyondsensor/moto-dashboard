@@ -20,7 +20,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
+import { NavUserSidebar } from "@/features/auth/components/nav-user-sidebar"
 import {
   Sidebar,
   SidebarContent,
@@ -114,7 +114,7 @@ export function AppSidebar({ user, groups, ...props }: AppSidebarProps) {
       </SidebarContent>
       <SidebarFooter>
         <Separator />
-        <NavUser user={user} />
+        <NavUserSidebar user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

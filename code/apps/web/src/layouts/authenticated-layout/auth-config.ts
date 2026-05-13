@@ -8,7 +8,6 @@ export const sideBarGroups: SidebarGroupProps[] = [
         title: "Dashboard",
         url: "/authenticated/home",
         icon: "LayoutDashboard",
-        isActive: true,
       },
       {
         title: "Visitor Management",

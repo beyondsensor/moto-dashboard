@@ -1,9 +1,7 @@
 import { Geist_Mono, Inter, Space_Grotesk } from "next/font/google"
 
 import "@workspace/ui/globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@workspace/ui/lib/utils"
-import { Providers } from "./providers"
 
 const spaceGroteskHeading = Space_Grotesk({
   subsets: ["latin"],
@@ -19,6 +17,8 @@ const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
+
+import { AppProviders } from "@/providers"
 
 export default function RootLayout({
   children,
@@ -37,9 +37,7 @@ export default function RootLayout({
       )}
     >
       <body>
-        <ThemeProvider>
-          <Providers>{children}</Providers>
-        </ThemeProvider>
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   )
