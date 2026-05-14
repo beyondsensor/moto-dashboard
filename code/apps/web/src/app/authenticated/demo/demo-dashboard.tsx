@@ -14,12 +14,18 @@ import {
   Camera
 } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
+import { CctvTab } from "./components/cctv-tab"
+import { AiAgentDrawer } from "./components/ai-agent-drawer"
+import { getSiteOperationalContext } from "./components/ai-agent-data"
+import { useState, useMemo } from "react"
+import { Button } from "@workspace/ui/components/button"
+import { Sparkles, Bot } from "lucide-react"
+
 import { DashboardTab } from "./components/dashboard-tab"
 import { AccessControlTab } from "./components/access-control-tab"
 import { FireSafetyTab } from "./components/fire-safety-tab"
 import { EventLogTab } from "./components/event-log-tab"
 import { VisitorTab } from "./components/visitor-tab"
-import { CctvTab } from "./components/cctv-tab"
 
 interface Floor {
   id: string
@@ -34,8 +40,11 @@ interface DemoDashboardProps {
 }
 
 export function DemoDashboard({ initialAlerts, initialFloors }: DemoDashboardProps) {
+  const [isAiOpen, setIsAiOpen] = useState(false)
+  const siteContext = useMemo(() => getSiteOperationalContext(), [])
+
   return (
-    <div className="flex flex-col gap-6 p-1">
+    <div className="relative flex flex-col gap-6 p-1">
       <Tabs defaultValue="dashboard" className="w-full">
         <TabsList className="h-12 w-full justify-start gap-4 rounded-none border-b border-primary/5 bg-transparent p-0">
           <TabsTrigger
@@ -108,6 +117,25 @@ export function DemoDashboard({ initialAlerts, initialFloors }: DemoDashboardPro
           </TabsContent>
         </div>
       </Tabs>
+
+      {/* Ask Beyond Trigger - Floating Global Position */}
+      <div className="fixed bottom-10 right-10 z-[9999]">
+        <Button 
+          onClick={() => setIsAiOpen(true)}
+          className="h-14 w-14 rounded-full shadow-[0_10px_40px_-10px_rgba(var(--primary),0.5)] bg-primary hover:scale-110 active:scale-95 transition-all group p-0 border-2 border-background flex items-center justify-center"
+        >
+          <div className="relative flex items-center justify-center h-full w-full">
+            <Bot className="h-6 w-6 text-primary-foreground group-hover:hidden transition-all" />
+            <Sparkles className="h-6 w-6 text-primary-foreground hidden group-hover:block animate-pulse transition-all" />
+          </div>
+        </Button>
+      </div>
+
+      <AiAgentDrawer 
+        open={isAiOpen} 
+        onOpenChange={setIsAiOpen} 
+        siteContext={siteContext}
+      />
     </div>
   )
 }
