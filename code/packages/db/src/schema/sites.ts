@@ -41,6 +41,8 @@ export const buildings = pgTable("buildings", {
   latitude: doublePrecision("latitude"),
   longitude: doublePrecision("longitude"),
   orderIndex: integer("order_index").default(0).notNull(),
+  exteriorImageUrl: text("exterior_image_url"),
+  sitePlanUrl: text("site_plan_url"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 })

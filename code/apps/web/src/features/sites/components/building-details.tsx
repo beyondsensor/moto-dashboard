@@ -6,7 +6,8 @@ import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { Field, FieldLabel, FieldError } from "@workspace/ui/components/field"
-import { MapPin, Save } from "lucide-react"
+import { MapPin, Save, Globe, FileText } from "lucide-react"
+import { ImageUpload } from "@/components/image-upload"
 
 interface BuildingDetailsProps {
   building: Building
@@ -15,7 +16,7 @@ interface BuildingDetailsProps {
 }
 
 export function BuildingDetails({ building, onSave, isPending }: BuildingDetailsProps) {
-  const { register, handleSubmit, formState: { errors, isDirty } } = useForm<UpsertBuildingData>({
+  const { register, handleSubmit, setValue, watch, formState: { errors, isDirty } } = useForm<UpsertBuildingData>({
     defaultValues: {
       id: building.id,
       name: building.name,
@@ -24,11 +25,38 @@ export function BuildingDetails({ building, onSave, isPending }: BuildingDetails
       latitude: building.latitude || 0,
       longitude: building.longitude || 0,
       orderIndex: building.orderIndex || 0,
+      exteriorImageUrl: building.exteriorImageUrl || null,
+      sitePlanUrl: building.sitePlanUrl || null,
     }
   })
 
+  const exteriorImageUrl = watch("exteriorImageUrl")
+  const sitePlanUrl = watch("sitePlanUrl")
+
   return (
     <div className="space-y-6 py-4">
+      {/* Image Management Section - Only for updates */}
+      {building.id && (
+        <div className="grid grid-cols-1 gap-6 p-4 rounded-xl bg-muted/20 border border-muted/20">
+          <input type="hidden" {...register("exteriorImageUrl")} />
+          <input type="hidden" {...register("sitePlanUrl")} />
+          <ImageUpload 
+            label="Exterior View"
+            value={exteriorImageUrl}
+            onChange={(url) => setValue("exteriorImageUrl", url, { shouldDirty: true })}
+            bucket={`org-${building.organizationId}`}
+            path={`sites/${building.siteId}/buildings/${building.id}/exterior`}
+          />
+          <ImageUpload 
+            label="Site Plan"
+            value={sitePlanUrl}
+            onChange={(url) => setValue("sitePlanUrl", url, { shouldDirty: true })}
+            bucket={`org-${building.organizationId}`}
+            path={`sites/${building.siteId}/buildings/${building.id}/site-plan`}
+          />
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Field data-invalid={!!errors.name}>
           <FieldLabel htmlFor="name">Building Name</FieldLabel>

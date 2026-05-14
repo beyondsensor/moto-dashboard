@@ -9,6 +9,7 @@ export async function getSiteInfrastructureAction(siteId: string) {
     .from("buildings")
     .select(`
       *,
+      site:sites(organization_id),
       floors:floors(
         *,
         zones:zones(*)
@@ -23,13 +24,18 @@ export async function getSiteInfrastructureAction(siteId: string) {
   }
 
   // Sort floors and zones by order_index and map to camelCase
-  const sortedData = (data || []).map(building => ({
+  const sortedData = (data as any || []).map((building: any) => ({
     ...building,
     siteId: building.site_id,
+    organizationId: building.site?.organization_id,
     orderIndex: building.order_index,
+    exteriorImageUrl: building.exterior_image_url,
+    sitePlanUrl: building.site_plan_url,
     floors: (building.floors || []).sort((a: any, b: any) => (a.order_index || 0) - (b.order_index || 0)).map((floor: any) => ({
       ...floor,
       buildingId: floor.building_id,
+      siteId: building.site_id,
+      organizationId: building.site?.organization_id,
       orderIndex: floor.order_index,
       levelNumber: floor.level_number,
       floorPlanUrl: floor.floor_plan_url,

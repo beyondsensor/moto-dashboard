@@ -23,8 +23,10 @@ export async function upsertBuildingAction(
         latitude: payload.latitude,
         longitude: payload.longitude,
         order_index: payload.orderIndex,
+        exterior_image_url: payload.exteriorImageUrl,
+        site_plan_url: payload.sitePlanUrl,
         updated_at: new Date().toISOString(),
-      })
+      } as any)
       .eq("id", id)
       .select()
       .single()
@@ -39,7 +41,9 @@ export async function upsertBuildingAction(
         latitude: payload.latitude,
         longitude: payload.longitude,
         order_index: payload.orderIndex || 0,
-      })
+        exterior_image_url: payload.exteriorImageUrl,
+        site_plan_url: payload.sitePlanUrl,
+      } as any)
       .select()
       .single()
   }
@@ -48,10 +52,13 @@ export async function upsertBuildingAction(
 
   revalidatePath(`/authenticated/sites/${siteId}/infrastructure`)
 
-  const building = result.data
+  const building = result.data as any
   return {
     ...building,
     siteId: building.site_id,
+    organizationId: (data as any).organizationId, // Keep existing if present
     orderIndex: building.order_index,
+    exteriorImageUrl: building.exterior_image_url,
+    sitePlanUrl: building.site_plan_url,
   }
 }

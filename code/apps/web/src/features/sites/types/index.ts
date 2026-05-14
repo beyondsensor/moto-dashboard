@@ -43,18 +43,23 @@ export interface SiteMember {
 export interface Building {
   id: string
   siteId: string
+  organizationId: string
   name: string
   description?: string | null
   address?: string | null
   latitude?: number | null
   longitude?: number | null
   orderIndex: number
+  exteriorImageUrl?: string | null
+  sitePlanUrl?: string | null
   floors?: Floor[]
 }
 
 export interface Floor {
   id: string
   buildingId: string
+  siteId: string
+  organizationId: string
   name: string
   levelNumber?: number | null
   orderIndex: number
@@ -78,6 +83,8 @@ export interface UpsertBuildingData {
   latitude?: number | null
   longitude?: number | null
   orderIndex?: number
+  exteriorImageUrl?: string | null
+  sitePlanUrl?: string | null
 }
 
 export interface UpsertFloorData {

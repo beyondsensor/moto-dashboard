@@ -5,6 +5,7 @@ import { uploadLogoAction } from "../actions/upload-logo"
 import { Button } from "@workspace/ui/components/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@workspace/ui/components/card"
 import { Upload, ImageIcon } from "lucide-react"
+import { SupabaseImage } from "@/components/supabase-image"
 
 import { toast } from "sonner"
 
@@ -46,16 +47,14 @@ export function LogoUpload({ organizationId, currentLogoUrl }: LogoUploadProps) 
       <CardContent className="flex flex-col gap-6">
 
         <div className="flex items-center gap-6">
-          <div className="h-24 w-24 rounded-lg border flex items-center justify-center bg-muted overflow-hidden relative">
-            {currentLogoUrl ? (
-              <img
-                src={currentLogoUrl}
-                alt="Logo"
-                className="h-full w-full object-contain"
-              />
-            ) : (
-              <ImageIcon className="h-10 w-10 text-muted-foreground" />
-            )}
+          <div className="h-32 w-32 rounded-lg border flex items-center justify-center bg-muted overflow-hidden relative">
+            <SupabaseImage 
+              bucket={`org-${organizationId}`}
+              path={currentLogoUrl}
+              alt="Logo"
+              className="h-full w-full object-contain"
+              fallback={<ImageIcon className="h-10 w-10 text-muted-foreground" />}
+            />
             {isUploading && (
               <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
                 <div className="h-5 w-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
